@@ -13,23 +13,26 @@ class Network(object):
         self.sizes = sizes
 
         # list of numpy matrices storing the biases at each layer except the first
-        # [[w1, w2, w3], [w_output]]
+        # [[[w1], [w2], [w3]], [[w_output]]]
+        # for each size except the first, return an array of size Y
         self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
-        # print('biases')
-        # print(self.biases)
+        print('biases')
+        print(self.biases)
 
         # list of numpy matrices storing the weights connecting the layers
         # e.g. weights[1] is a Numpy matrix storing the weights connecting
         # the second and third layers of neurons
         # It's a matrix such that wjk is the weight for the connection between
         # the kth neuron in the second layer, and the jth neuron in the third layer.
+        # ex: sizes: [2, 3, 1]. The zip returns [(2, 3), (3, 1)]
         self.weights = [np.random.randn(y, x)
                        for x, y in zip(sizes[:-1], sizes[1:])]
-        # print('weights[0]')
-        # print(self.weights[0])
+        print('weights[0]')
+        print(self.weights[0])
 
     # Note that when the input z is a vector or Numpy array, Numpy automatically
     # applies the function sigmoid elementwise, that is, in vectorized form.
+    #
     @staticmethod
     def sigmoid(z):
         return 1.0 / (1.0 + np.exp(-z))
@@ -58,6 +61,11 @@ class Network(object):
         tracking progress, but slows things down substantially."""
         if test_data: n_test = len(test_data)
         n = len(training_data)
+
+        if test_data:
+            print "Epoch -1: {0} / {1}".format(
+                self.evaluate(test_data), n_test)
+
         for j in xrange(epochs):
             random.shuffle(training_data)
             mini_batches = [
